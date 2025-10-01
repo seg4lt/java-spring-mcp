@@ -1,0 +1,43 @@
+# Not a representation of real compose file
+# Just a config to run everything at once
+services:
+  api-server:
+    build:
+      context: .
+      dockerfile: ./api-server/Dockerfile
+    ports:
+      - "4280:4280"
+    volumes:
+      # Mount Gradle cache for faster builds (placebo maybe, feels faster)
+      - ~/.gradle:/root/.gradle
+    develop:
+      watch:
+        - action: rebuild
+          path: ./api-server/src/main/java/
+          target: /app/api-server/src/main/java/
+        - action: rebuild
+          path: ./api-server/src/main/resources/
+          target: /app/api-server/src/main/resources/
+        - action: rebuild
+          path: ./api-server/build.gradle.kts
+        - action: rebuild
+          path: ./gradle/libs.versions.toml
+        - action: rebuild
+          path: ./settings.gradle.kts
+    environment:
+      - GRADLE_OPTS=-Dorg.gradle.daemon=false -Dorg.gradle.caching=true
+      - SERVER_ADDRESS=0.0.0.0
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=health,info,metrics
+      - MANAGEMENT_ENDPOINT_HEALTH_SHOW_DETAILS=always
+      - LOGGING_LEVEL_COM_SEG4LT=DEBUG
+      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK=INFO
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+volumes:
+  gradle-cache:
+  gradle-wrapper-cache:
