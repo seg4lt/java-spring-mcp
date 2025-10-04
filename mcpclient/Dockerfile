@@ -13,8 +13,8 @@ COPY ./pom.xml ./
 
 RUN chmod +x mvnw && ./mvnw dependency:go-offline
 
-COPY ./src/ ./src/
+# COPY ./src/ ./src/
 
 EXPOSE 4280
 
-CMD ["./mvnw", "spring-boot:run"]
+CMD ["./mvnw", "clean", "spring-boot:run"]
