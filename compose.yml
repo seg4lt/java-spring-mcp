@@ -1,0 +1,25 @@
+services:
+  mcp-server:
+    extends:
+      file: ./mcpserver/compose.yml
+      service: mcp-server
+    develop:
+      watch:
+        - action: none
+  mcp-client:
+    extends:
+      file: ./mcpclient/compose.yml
+      service: mcp-client
+    develop:
+      watch:
+        - action: none
+    depends_on:
+      mcp-server:
+        condition: service_healthy
+    environment:
+      - SPRING_AI_OLLAMA_BASE_URL=http://host.docker.internal:11434
+      - SPRING_AI_MCP_CLIENT_SSE_CONNECTIONS_SERVER1_URL=http://host.docker.internal:4280
+      - SPRING_AI_MCP_CLIENT_SSE_CONNECTIONS_SERVER1_SSE-ENDPOINT=/sse
+
+#spring.ai.mcp.client.sse.connections.server1.url=http://${SERVER_1_HOST:localhost}:4280
+#spring.ai.mcp.client.sse.connections.server1.sse-endpoint=http://${SERVER_1_HOST:localhost}:4280/sse
