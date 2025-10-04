@@ -1,0 +1,29 @@
+services:
+  mcp-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "4280:4280"
+    develop:
+      watch:
+        - action: rebuild
+          path: ./src/main/java/
+          target: /app/src/main/java/
+        - action: rebuild
+          path: ./src/main/resources/
+          target: /app/src/main/resources/
+        - action: rebuild
+          path: ./pom.xml
+    environment:
+      - SERVER_ADDRESS=0.0.0.0
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=health,info,metrics
+      - MANAGEMENT_ENDPOINT_HEALTH_SHOW_DETAILS=always
+      - LOGGING_LEVEL_COM_SEG4LT=DEBUG
+      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK=INFO
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:4280/actuator/health" ]
+      interval: 3s
+      timeout: 2s
+      retries: 3
+      start_period: 5s
