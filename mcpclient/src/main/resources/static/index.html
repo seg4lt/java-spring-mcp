@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mcp Test</title>
+  <script src="script.js" defer></script>
+</head>
+
+<body>
+  <div class="stream-section">
+    <h2 class="section-title">Chat</h2>
+    <div class="input-group">
+      <label for="chat-input">Enter your message:</label>
+      <textarea id="chat-input"
+        placeholder="Ask me something... (e.g., Write a short story or Explain quantum physics)"></textarea>
+    </div>
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="startChat()">Send</button>
+      <button class="btn btn-secondary" onclick="clearStream()">Clear</button>
+    </div>
+    <div class="response-container">
+      <div class="response-header">
+        <span>Response:</span>
+        <span id="chat-status"></span>
+      </div>
+      <div class="response-content" id="chat-response"></div>
+    </div>
+    <div id="tools">
+      <button onclick="getTools()">Get Tools</button>
+    </div>
+  </div>
+</body>
+
+</html>
