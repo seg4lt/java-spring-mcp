@@ -23,7 +23,7 @@ public class McpServerApplication {
 class TestApi {
 
   @GetMapping("/secret-message")
-  @McpTool(description = """
+  @McpTool(name = "secret-messsage", description = """
       # Retrieves the super secret message from server.
 
       ## Use this tool when:
