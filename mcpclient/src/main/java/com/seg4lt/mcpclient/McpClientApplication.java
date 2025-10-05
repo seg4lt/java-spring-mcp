@@ -7,8 +7,12 @@ import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
+import org.springframework.ai.chat.memory.ChatMemory;
+import org.springframework.ai.chat.memory.MessageWindowChatMemory;
 import org.springframework.ai.mcp.SyncMcpToolCallbackProvider;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -52,12 +56,17 @@ class ChatController {
           .user(userInput)
           .stream()
           .content()
-          .onErrorReturn(
-              "I'm having trouble accessing that information right now.");
+          .doOnError(throwable -> {
+            log.error("Error during chat stream: ", throwable);
+            if (throwable instanceof WebClientResponseException webClientException) {
+              log.error("HTTP Status: {}", webClientException.getStatusCode());
+              log.error("Response Body: {}", webClientException.getResponseBodyAsString());
+            }
+          })
+          .onErrorReturn("I'm having trouble accessing that information right now.");
     } catch (Exception e) {
-      System.err.println("Error in stream generation: " + e.getMessage());
-      return Flux.just(
-          "I'm having trouble accessing that information right now.");
+      log.error("Error in stream generation: ", e);
+      return Flux.just("I'm having trouble accessing that information right now.");
     }
   }
 
@@ -70,10 +79,17 @@ class ChatController {
           .toolContext(Map.of("toolName", toolName))
           .stream()
           .content()
+          .doOnError(throwable -> {
+            log.error("Error during tool call stream: ", throwable);
+            if (throwable instanceof org.springframework.web.reactive.function.client.WebClientResponseException webClientException) {
+              log.error("HTTP Status: {}", webClientException.getStatusCode());
+              log.error("Response Body: {}", webClientException.getResponseBodyAsString());
+            }
+          })
           .onErrorReturn(
               "I'm having trouble accessing that information right now.");
     } catch (Exception e) {
-      System.err.println("Error in tool call: " + e.getMessage());
+      log.error("Error in tool call: ", e);
       return Flux.just(
           "I'm having trouble accessing that information right now.");
     }
@@ -113,7 +129,11 @@ class ChatClientConfig {
       ChatClient.Builder builder,
       LocalTools localTools,
       SyncMcpToolCallbackProvider toolCallbackProvider) {
+
+    ChatMemory chatMemory = MessageWindowChatMemory.builder().build();
     return builder
+        .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build())
+
         .defaultSystem(
             """
                 You are an intelligent assistant integrated into an application that can access external data and functions through tools.
