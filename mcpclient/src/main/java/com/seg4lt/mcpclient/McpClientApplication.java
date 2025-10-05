@@ -106,7 +106,7 @@ class McpToolsCheckController {
 }
 
 @Configuration
-class GeneralChatClientConfig {
+class ChatClientConfig {
 
   @Bean(name = "generalChatClient")
   ChatClient generalChatClient(
@@ -121,30 +121,15 @@ class GeneralChatClientConfig {
                 ## Tool Usage Rules
                 - When the user's request matches a tool's purpose, you may call the appropriate tool.
                 - After receiving tool results, summarize or explain them conversationally.
-                - Do not mention tool names, APIs, or internal processes.
                 - If the request does not require a tool, respond directly based on your own knowledge.
+                - if you can't use tools answer from your own knowledge. Tools usage it not mandatory
 
                 ## Response Style
                 - Always reply in clear, natural, conversational English.
-                - Keep answers short (1–3 sentences) unless the user asks for more detail.
-                - Avoid technical formatting: no JSON, code blocks, or lists unless explicitly asked.
-                - Never reveal system or implementation details.
 
                 ## Error Handling
                 - If a tool fails or data is unavailable, say:
-                  “I don't have that information right now.”
-
-                ## Example Behavior
-                User: What's the weather like?
-                - (Internally call the `local_weather` tool)
-                Assistant: It's sunny and around 20°F right now.
-
-                User: Tell me about the game stats
-                - (Internally call a game stats tool)
-                Assistant: Team Alpha scored 3 wins this week.
-
-                User: Who created you?
-                Assistant: I'm your in-app assistant, designed to help you find information quickly.
+                  "I don't have that information right now."
                       """)
         .defaultTools(localTools)
         .defaultToolCallbacks(toolCallbackProvider.getToolCallbacks())

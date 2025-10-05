@@ -28,10 +28,18 @@ async function startChat() {
   }, 10);
 
   try {
-    const result = await fetch(
-      `/api/v1/chat?userInput=${encodeURIComponent(message)}`
-      // `/api/v1/tool-call?userInput=${encodeURIComponent(message)}&toolName=local_weather`
-    );
+    const checkedRadio = document.querySelector('input[name="api-select"]:checked');
+    let url; 
+    switch(checkedRadio.value) {
+      case 'tool-chat':
+        url = `/api/v1/tool-call?userInput=${encodeURIComponent(message)}&toolName=local_weather`
+        break;
+      case 'chat':
+      default:
+        url = `/api/v1/chat?userInput=${encodeURIComponent(message)}`;
+    }
+
+    const result = await fetch(url);
     const reader = result.body.getReader();
     const decoder = new TextDecoder();
 

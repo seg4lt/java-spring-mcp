@@ -1,4 +1,6 @@
-application-openai.properties
+# Ignore local development properties file (may contain API keys)
+application-local.properties
+
 HELP.md
 target/
 .mvn/wrapper/maven-wrapper.jar

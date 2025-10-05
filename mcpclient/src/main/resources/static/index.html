@@ -21,14 +21,25 @@
   <div
     style="display: flex; flex-direction: column; gap: 20px; align-items: center; justify-content: center; height: 100%; width: 100%;">
     <h2 style="width: 100%;">Chat</h2>
-    <div style="border: 1px solid #ccc; border-radius: 5px; padding: 10px; width: 100%; height: 60vh; overflow-y: auto;">
+
+    <div>
+      <label for="chat-api">Chat</label>
+      <input type="radio" id="chat" name="api-select" value="chat" checked>
+      <label for="tool-chat-api">Tool Chat </label>
+      <input type="radio" id="tool-chat-api" name="api-select" value="tool-chat">
+    </div>
+
+
+    <div
+      style="border: 1px solid #ccc; border-radius: 5px; padding: 10px; width: 100%; height: 60vh; overflow-y: auto;">
       <div class="response-header">
         <span id="chat-status"></span>
       </div>
       <div id="chat-response">Let's chat...</div>
     </div>
     <div style="width: 100%;">
-      <textarea style="width: 100%; resize: none; height: 10vh;" id="chat-input" placeholder="Let's chat...."></textarea>
+      <textarea style="width: 100%; resize: none; height: 10vh;" id="chat-input"
+        placeholder="Let's chat...."></textarea>
     </div>
     <div style="display: flex; gap: 10px; justify-content: flex-end; width: 100%;">
       <button class="btn btn-primary" onclick="startChat()">Send</button>
