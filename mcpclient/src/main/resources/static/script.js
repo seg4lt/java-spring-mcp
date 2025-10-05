@@ -29,8 +29,8 @@ async function startChat() {
 
   try {
     const result = await fetch(
-      // `/api/v1/chat?userInput=${encodeURIComponent(message)}`
-      `/api/v1/tool-call?userInput=${encodeURIComponent(message)}&toolName=local_weather`
+      `/api/v1/chat?userInput=${encodeURIComponent(message)}`
+      // `/api/v1/tool-call?userInput=${encodeURIComponent(message)}&toolName=local_weather`
     );
     const reader = result.body.getReader();
     const decoder = new TextDecoder();
